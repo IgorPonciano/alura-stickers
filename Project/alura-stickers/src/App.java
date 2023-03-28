@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class App {
     public static void main(String[] args) throws Exception {
+        // run chcp 65001 on cmd for emojis
       PrintMovieRatingListOnTerminal("https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json", "Top 10 filmes IMDB");
       PrintMovieRatingListOnTerminal("https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/MostPopularTVs.json", "Top 3 séries IMDB");
       PrintMovieRatingListOnTerminal("https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/MostPopularMovies.json", "Filmes mais populares IMDB");
@@ -61,7 +62,7 @@ public class App {
         (4 <= numeroEstrelas && numeroEstrelas <= 5) ? 1 :
          (6 <= numeroEstrelas && numeroEstrelas <= 7) ? 2 :
          (8 == numeroEstrelas ? 3 :
-         9 <= numeroEstrelas ? 4 :
+         9 == numeroEstrelas ? 4 :
           5)) {
             case 0:
                 System.out.print("🍅");
