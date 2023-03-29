@@ -29,10 +29,10 @@ graphics.setFont(graphics.getFont().deriveFont(Font.BOLD, largura * 0.16f )); //
 `
 ![exemploTopzera](https://user-images.githubusercontent.com/79609859/228680158-8cced64c-963c-4339-91fa-6c35d493b04b.png)
 
-``` 
 Tudo funcionava bem, no entanto, ao implementar frases maiores do que "topzera", nosso texto ficava totalmente vazado/cortado.
 Então, passei a estudar formas de reescalonar o texto baseado na área disponível para a frase na figurinha.
-``` 
+
+#### Nova solução:
 Aqui, definimos um retângulo como a área limite para o nosso texto, evitando que ele vaze para fora das margens de nossa imagem.
 
 O método de escalonamento da font baseado no rect, veio da seguinte [thread do StackOverflow](https://stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle). A partir dessa leitura e uma pequena pesquisa acerca do uso de labels, cheguei a seguinte solução:
@@ -44,7 +44,37 @@ O método de escalonamento da font baseado no rect, veio da seguinte [thread do 
 
 ![offsetsTexto](https://user-images.githubusercontent.com/79609859/228680349-8a17cf25-b626-4835-b361-5d1c7ebc6747.png)
 
+Chegando ao seguinte resultado:
+
+<img src=https://user-images.githubusercontent.com/79609859/228684246-e342be4f-f072-4c83-98e9-f7e01bd925bd.png width="168.8" height="325">
+
+```
+Apesar do escalonamento funcionar, para o uso como figurinha, textos muito pequenos ficam com leitura ruim.
+Por isso, pretendo refatorar o código para buscar uma solução com quebra de linha baseado na área do rect.
 ``` 
+### 3. Colocar outra fonte como a Comic Sans ou a Impact, a fonte usada em memes:
+
+De forma similar ao uso das imagens a partir de um InputStream, podemos importar um arquivo de Font para uso no projeto.
+
+![fontsDentroDoProjeto](https://user-images.githubusercontent.com/79609859/228685342-0ecd6a08-8ca6-4e28-813b-f8b5e8ae7203.png)
+
+![setupCustomFontJava](https://user-images.githubusercontent.com/79609859/228686481-91f477d3-ea54-4975-b64e-d05947b81a09.png)
+
+### 4. Colocar contorno (outline) no texto da imagem:
+
+Para este desafio, primeiro tentei descobrir uma possível solução para a criação de outlines dentro do próprio Java. Após alguns minutos um pouco afogado com os novos conteúdos, decidi parar e pensar em uma solução manual.
+
+Pensando na forma como alguns shaders de outline funcionam na Unity, criei a seguinte solução:
+
+![outlineAntesDoTexto](https://user-images.githubusercontent.com/79609859/228687254-d6093e5b-2868-4afc-ad85-c8a8922f4fe4.png)
+
+Aqui, renderizamos dois outros textos na cor desejada para a outline. Como sua chamada ocorre primeiro, eles serão desenhados por trás do texto em si. Ao modificar a posição das duas cópias, partes delas ficam "sobrando" através do texto original, criando o efeito de outline.
+
+![ExemploOutline](https://user-images.githubusercontent.com/79609859/228687598-d82de06c-5afa-443a-81b8-e71e85a89b59.png)
+
+Claro, essa provavelmente está longe de ser a melhor forma de atingir o resultado desejado, mas como parte do meu aprendizado na imersão, fiquei muito satisfeito com o resultado de uma solução própria.
+
+
 🍅 = notas entre 1 e 3
 🌚 = notas entre 4 e 5
 🍿 = notas entre 6 e 7
