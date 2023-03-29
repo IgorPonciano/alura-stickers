@@ -2,14 +2,47 @@
 
 Projeto que acompanha meu desenvolvimento durante a imersão Java da Alura.
 
-## Aula 1
-Durante essa aula, aprendi a fazer a comunicação com um HTTP para conseguir consumir dados de uma API, assim como uma forma básica de trabalhar com parse de strings em java, utilizando regex.
-Além disso, também experimentei bastante com operações de print e estilização dos textos no terminal.
+## Aula 2
+Nesta aula, trabalhamos com elementos gráficos do java, tais como BufferedImage, Graphics2D, ImageIO e Font. Criamos uma nova classe com a funcionalidade de Fábrica de figurinhas para o whats. Nela, podemos inserir uma imagem base, criar e modificar uma nova imagem baseada nela e exportar-la como um arquivo de imagem novo. Assim, podemos pegar um poster de filme, por exemplo, e baseado em alguns parâmetros, gerar uma imagem como:
 
-Na parte de trabalhar com diferentes tags para modificar a cor e estilo do texto, senti um pouco de dificuldade para entender como trabalhar com mais de uma tag ao mesmo tempo, mas após alguns testes, cheguei em um resultado que me agradou.
+![ResultadoFinalExemplo](https://user-images.githubusercontent.com/79609859/228674755-e6a9c44c-3f01-4660-96cc-419ca81ace32.png)
 
-Para o desafio de adicionar emojis para representar a classificação do filme, comecei implementando o valor de estrelas baseado no Math.round() do valor da classificação como float.
-A partir disso, decidi ir além e testar a implementação de emojis diferentes para cada intervalo da classificação, algo como:
+## Desafios
+
+### 1. Criar diretório de saída das imagens, se ainda não existir:
+Para este desafio, descobri e explorei tópicos como [File.mkdirs](https://www.geeksforgeeks.org/file-mkdirs-method-in-java-with-examples/). Caso estejamos tentando salvar um arquivo em um path que não existe, o mkdirs permite a criação automática de tal diretório.
+
+![Utilização do mkdirs](https://user-images.githubusercontent.com/79609859/228676483-433c51e8-0825-4840-b762-79d89ef98d29.png)
+
+
+### 2. Centralizar o texto na figurinha:
+
+Aqui, comecei testando alguns valores até conseguir centralizar a mensagem "topzera", rodando o código em uma imagem de teste. No entanto, quando rodei o código utilizando o url da lista, notei um problema. Nem todos os posters possuem escala similar, nos arquivos com resolução maior que a imagem teste, por exemplo, o texto ficava muito pequenininho. Isso ocorreu, pois nossa font permanecia com o mesmo size independente do tamanho da imagem.
+
+Para encontrar uma forma de escalonar a font de acordo com o tamanho da imagem, recorri ao bom e velho caderninho.
+<img src=https://user-images.githubusercontent.com/79609859/228677524-54d7695d-71cd-42b4-9486-4a4b49c0cee8.jpeg width="321" height="426.6">
+
+Utilizando ao menos três imagens, podemos encontrar uma "constante", que nos permite trabalhar o escalonamento para n opções de tamanho.
+
+`
+graphics.setFont(graphics.getFont().deriveFont(Font.BOLD, largura * 0.16f )); // tamanho bom para a palavra topzera
+`
+![exemploTopzera](https://user-images.githubusercontent.com/79609859/228680158-8cced64c-963c-4339-91fa-6c35d493b04b.png)
+
+``` 
+Tudo funcionava bem, no entanto, ao implementar frases maiores do que "topzera", nosso texto ficava totalmente vazado/cortado.
+Então, passei a estudar formas de reescalonar o texto baseado na área disponível para a frase na figurinha.
+``` 
+Aqui, definimos um retângulo como a área limite para o nosso texto, evitando que ele vaze para fora das margens de nossa imagem.
+
+O método de escalonamento da font baseado no rect, veio da seguinte [thread do StackOverflow](https://stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle). A partir dessa leitura e uma pequena pesquisa acerca do uso de labels, cheguei a seguinte solução:
+
+![image](https://user-images.githubusercontent.com/79609859/228680620-feb8d496-6f83-4bad-a0e2-d1864b82357e.png)
+
+![scaleFontMethod](https://user-images.githubusercontent.com/79609859/228680823-e3566aa1-0f92-499e-bba8-835bb19caad8.png)
+
+
+![offsetsTexto](https://user-images.githubusercontent.com/79609859/228680349-8a17cf25-b626-4835-b361-5d1c7ebc6747.png)
 
 ``` 
 🍅 = notas entre 1 e 3
@@ -28,6 +61,7 @@ Para isso, segui a implementação de um switch case baseado nesses intervalos, 
 Por fim, para que o método de gerar a lista de filmes pudesse ser reutilizada para outras listas do IMDB, como melhores séries ou filmes mais populares, extrai o conteúdo do Main para um método que recebe como parâmetros uma string com o Url da API e uma string para o titulo da lista.
 
 ![CodigoComoMetodo](https://user-images.githubusercontent.com/79609859/228272839-b034511b-957c-43f6-86b6-07b527f5cc94.PNG)
+
 
 ``` 
 Este foi o resultado atingido:
