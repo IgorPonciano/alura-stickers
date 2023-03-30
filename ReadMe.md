@@ -7,6 +7,27 @@ Nesta aula, trabalhamos com elementos gráficos do java, tais como BufferedImage
 
 ![ResultadoFinalExemplo](https://user-images.githubusercontent.com/79609859/228674755-e6a9c44c-3f01-4660-96cc-419ca81ace32.png)
 
+## Bug encontrado e sua solução
+
+Durante a geração de figurinhas seguindo as urls com as lists de topfilmes e séries, notei que alguns titulos não geravam a imagem. Tais filmes eram "Thor: Love and Thunder", "The Godfather: Part II", "The Lord of the Rings: The Fellowship of the Ring", dentre outros.
+Inicialmente, apenas pelo resultado imediato, pensei que o problema estava ligado à sagas de filmes com mais de uma sequência presente, visto que em casos como o "The Godfather", o filme original tinha figurinha, porém a sequência gerava um arquivo quebrado.
+Parando para analisar calmamente, percebi que nenhum dos filmes do "The Lord of the Rings" estava presente. Logo, o problema deveria ser em outro detalhe em comum.
+
+Tive um palpite que o erro estava ligado ao nome do filme, todos eles continham ":", mas ainda não sabia o porquê de tal erro. 
+
+Testando isoladamente com o filme do Thor, decidi setar um nome manualmente ao invés de utilizar o titulo. Passei o valor "Thor" e tudo funcionou normalmente, imagem gerada.
+
+![filenameInvalid](https://user-images.githubusercontent.com/79609859/228700900-2658a5d1-54f7-4ec6-98c6-1331dbe611c6.png)
+
+Descobri que o motivo do erro, é que o caractere ":" é na verdade um dos caracteres invalidos para a nomenclatura de um arquivo, algo que não me recordava na hora do teste. Assim, partindo da noção de que precisava encontrar uma valor padrão nas strings de titulo e, modificar seu valor, lembrei-me do parser criado na aula passada e, me pareceu um bom momento para praticar a criação de um novo parser em java.
+
+Utilizando o site [regex101](https://regex101.com/), setei as condições desejadas e utilizei da função Code Generator, para gerar a expressão regular.
+
+![parserTitulos](https://user-images.githubusercontent.com/79609859/228702300-a276603b-3643-47f2-ad9c-24763a37eac2.png)
+
+O método pega todos os caracteres ":" encontrados nos titulos e os substitui por "-", um caractere valido. Assim, "Thor: Love and Thunder" fica "Thor- Love and Thunder".
+
+
 ## Desafios
 
 ### 1. Criar diretório de saída das imagens, se ainda não existir:
@@ -74,27 +95,21 @@ Aqui, renderizamos dois outros textos na cor desejada para a outline. Como sua c
 
 Claro, essa provavelmente está longe de ser a melhor forma de atingir o resultado desejado, mas como parte do meu aprendizado na imersão, fiquei muito satisfeito com o resultado de uma solução própria.
 
+### 5. Colocar uma imagem de você que está fazendo esse curso sorrindo, fazendo joinha e fazer com que o texto da figurinha seja personalizado de acordo com as classificações do IMDB:
+Ok, neste desafio, apenas cumpri uma parte (ao menos por enquanto). Eu compreendo como seria o processo de desenhar a minha foto sobre a figurinha, que poderia ser feito utilizando o método [graphics.drawImage](https://docs.oracle.com/javase/tutorial/2d/images/drawimage.html), mas no momento não me senti confortável para tirar fotos e posta-las como figurinhas.
 
-🍅 = notas entre 1 e 3
-🌚 = notas entre 4 e 5
-🍿 = notas entre 6 e 7
-🌈 = nota 8
-🔥 = nota 9
-🏆 = nota 10
-``` 
+No entanto, a possibilidade de adicionar um foto minha fazendo joinha, me trouxe a ideia de trabalhar aquele switch de intervalos de nota criado na aula 1 e, dependendo da avaliação do filme, adicionar uma foto minha mais empolgado ou entediado, trazendo qual seria minha reação ao assistir tal filme.
+Seguindo esta lógica, também atualizei o método Cria() para receber um input diferente dependendo da nota, no caso deste exercício, decidi que a frase legenda da foto (o topzera) seria substituido por uma String diferente para cada avaliação.
 
-Para isso, segui a implementação de um switch case baseado nesses intervalos, algo que já havia visto em c#, mas que não sabia se era possível em Java. Após um pouco de pesquisa, descobri uma possível implementação:
+![MetodoCria](https://user-images.githubusercontent.com/79609859/228697725-5044fe21-a46b-4225-86d3-933424f34744.png)
+![AtualizacaoDoMetodoDeAvaliarNota](https://user-images.githubusercontent.com/79609859/228697873-74cf18e4-cd9c-4d42-a464-a0ee4fa9ffa6.png)
 
-![switchCaseComCondicionais](https://user-images.githubusercontent.com/79609859/228282403-e27be361-0242-455f-bee3-7def831c427d.PNG)
+O método acima deverá ser refatorado em breve. Acabei adicionando essa segunda responsabilidade (gerar texto e emoji) para o teste, mas acredito que pensando na limpeza do código, será melhor no mínimo renomear o método e possibilitar a saida separada de diferentes resultados (gerar textoLegendaFigurinha ou emoji avaliação no terminal, ou...)
 
-
-Por fim, para que o método de gerar a lista de filmes pudesse ser reutilizada para outras listas do IMDB, como melhores séries ou filmes mais populares, extrai o conteúdo do Main para um método que recebe como parâmetros uma string com o Url da API e uma string para o titulo da lista.
-
-![CodigoComoMetodo](https://user-images.githubusercontent.com/79609859/228272839-b034511b-957c-43f6-86b6-07b527f5cc94.PNG)
-
-
-``` 
-Este foi o resultado atingido:
-``` 
-![Output do código](https://user-images.githubusercontent.com/79609859/228272655-26bbcd67-07c4-43ad-8080-59c532046c88.PNG)
+```
+Obs:Sobre a adição de emojis na String da legenda - Na maioria da fonts, não há suporte para um caractere correspondente ao emoji,
+por isso o emoji será renderizado como [] ou similares.
+Para ter a presença do emoji, evitando essa dependencia direta de utilizar uma font que suporta emojis, podemos realizar o draw
+dos emojis como imagem, seguindo a mesma lógica pensada para a inserção da minha foto.
+```
 
