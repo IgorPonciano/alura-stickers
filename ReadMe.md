@@ -41,6 +41,7 @@ Para este desafio, descobri e explorei tópicos como [File.mkdirs](https://www.g
 Aqui, comecei testando alguns valores até conseguir centralizar a mensagem "topzera", rodando o código em uma imagem de teste. No entanto, quando rodei o código utilizando o url da lista, notei um problema. Nem todos os posters possuem escala similar, nos arquivos com resolução maior que a imagem teste, por exemplo, o texto ficava muito pequenininho. Isso ocorreu, pois nossa font permanecia com o mesmo size independente do tamanho da imagem.
 
 Para encontrar uma forma de escalonar a font de acordo com o tamanho da imagem, recorri ao bom e velho caderninho.
+
 <img src=https://user-images.githubusercontent.com/79609859/228677524-54d7695d-71cd-42b4-9486-4a4b49c0cee8.jpeg width="321" height="426.6">
 
 Utilizando ao menos três imagens, podemos encontrar uma "constante", que nos permite trabalhar o escalonamento para n opções de tamanho.
