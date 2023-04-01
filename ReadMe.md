@@ -2,114 +2,68 @@
 
 Projeto que acompanha meu desenvolvimento durante a imersão Java da Alura.
 
-## Aula 2
-Nesta aula, trabalhamos com elementos gráficos do java, tais como BufferedImage, Graphics2D, ImageIO e Font. Criamos uma nova classe com a funcionalidade de Fábrica de figurinhas para o whats. Nela, podemos inserir uma imagem base, criar e modificar uma nova imagem baseada nela e exportar-la como um arquivo de imagem novo. Assim, podemos pegar um poster de filme, por exemplo, e baseado em alguns parâmetros, gerar uma imagem como:
+## Aula 3
 
-![ResultadoFinalExemplo](https://user-images.githubusercontent.com/79609859/228674755-e6a9c44c-3f01-4660-96cc-419ca81ace32.png)
+Na aula de hoje, trabalhamos a refatoração, pensando em aspectos como boas práticas e a extensibilidade do nosso código. Vimos questões como o uso de interfaces e polimorfismo para trazer uma abstração e flexibilidade maior para nossos métodos e classes.
 
-## Bug encontrado e sua solução
+### Nova API
 
-Durante a geração de figurinhas seguindo as urls com as lists de topfilmes e séries, notei que alguns titulos não geravam a imagem. Tais filmes eram "Thor: Love and Thunder", "The Godfather: Part II", "The Lord of the Rings: The Fellowship of the Ring", dentre outros.
-Inicialmente, apenas pelo resultado imediato, pensei que o problema estava ligado à sagas de filmes com mais de uma sequência presente, visto que em casos como o "The Godfather", o filme original tinha figurinha, porém a sequência gerava um arquivo quebrado.
-Parando para analisar calmamente, percebi que nenhum dos filmes do "The Lord of the Rings" estava presente. Logo, o problema deveria ser em outro detalhe em comum.
+Um ponto legal de trabalhar com uma API nova, no caso a API da NASA, foi que como o site da API do IMDB estava com instabilidades, nas outras aulas não tinha tido a experiência de acessar a url utilizando minha própria API, o json vinha de uma url já pronta previamente e isso me frustrava um pouco. Descobrir a sintaxe de uso da api_key e acessar o url por conta própria me trouxe a experiência mais real de trabalhar com esse tipo de ferramenta.
 
-Tive um palpite que o erro estava ligado ao nome do filme, todos eles continham ":", mas ainda não sabia o porquê de tal erro. 
+Na [página da API](https://api.nasa.gov/), nós encontramos uma tabela com os parâmetros e um exemplo de como a query fica no url.
 
-Testando isoladamente com o filme do Thor, decidi setar um nome manualmente ao invés de utilizar o titulo. Passei o valor "Thor" e tudo funcionou normalmente, imagem gerada.
+![API NASA how to use](https://user-images.githubusercontent.com/79609859/229006448-77ef01e4-7153-45de-a52a-36575252ec12.png)
 
-![filenameInvalid](https://user-images.githubusercontent.com/79609859/228700900-2658a5d1-54f7-4ec6-98c6-1331dbe611c6.png)
+### String.ReplaceAll()
 
-Descobri que o motivo do erro, é que o caractere ":" é na verdade um dos caracteres invalidos para a nomenclatura de um arquivo, algo que não me recordava na hora do teste. Assim, partindo da noção de que precisava encontrar uma valor padrão nas strings de titulo e, modificar seu valor, lembrei-me do parser criado na aula passada e, me pareceu um bom momento para praticar a criação de um novo parser em java.
+Durante a aula, descobri que já existe uma solução própria dentro do java para a problemática com a qual nosso parser customizado lidava. Utilizando o método [String.ReplaceAll()]([https://www.javatpoint.com/java-string-replaceall](https://www.javatpoint.com/java-string-replaceall)), podemos substituir facilmente os “:” por “-” em nossos títulos. Assim, o código já fica bem mais limpo:
 
-Utilizando o site [regex101](https://regex101.com/), setei as condições desejadas e utilizei da função Code Generator, para gerar a expressão regular.
+![String ReplaceAll](https://user-images.githubusercontent.com/79609859/229006781-18781ef6-00c2-4556-882d-9fa6ce657233.png)
 
-![parserTitulos](https://user-images.githubusercontent.com/79609859/228702300-a276603b-3643-47f2-ad9c-24763a37eac2.png)
+## Refatoração do nosso código
 
-O método pega todos os caracteres ":" encontrados nos titulos e os substitui por "-", um caractere valido. Assim, "Thor: Love and Thunder" fica "Thor- Love and Thunder".
+### 1. MétodoPrinter da aula 1
+Primeiramente, seguindo a próprio andar da aula que buscava tratar o código da classe App, notei que o método que criei durante a aula 1 para printar a lista de filmes e sua classificação, já não funcionava bem naquele espaço. Estavamos desenvolvendo um código de gerador de figurinhas, logo o método de debug no terminal precisava se tornar sua própria classe (Single Responsibility Principle).
 
+![metodoComoNovaClasse](https://user-images.githubusercontent.com/79609859/229007301-33d04ca3-3326-493a-af66-f793e030a275.png)
 
-## Desafios
+A chamada do método a partir do nosso main, ficou assim:
 
-### 1. Criar diretório de saída das imagens, se ainda não existir:
-Para este desafio, descobri e explorei tópicos como [File.mkdirs](https://www.geeksforgeeks.org/file-mkdirs-method-in-java-with-examples/). Caso estejamos tentando salvar um arquivo em um path que não existe, o mkdirs permite a criação automática de tal diretório.
+![ChamadaDoMoviePrinter](https://user-images.githubusercontent.com/79609859/229007329-59a1e956-0c82-432b-9f93-a02d7c5b4dcb.png)
 
-![Utilização do mkdirs](https://user-images.githubusercontent.com/79609859/228676483-433c51e8-0825-4840-b762-79d89ef98d29.png)
+### 2. Nova API, diferentes keys
+Com a adição da nova API da NASA, podemos testar se nosso código sem modificações seria capaz de funcionar para gerar figurinhas do novo url. 
 
+Claro, como os valores das keys da API são diferentes da API do IMDB, alguns ajustes tiverem que ser feitos.
 
-### 2. Centralizar o texto na figurinha:
+![MudancaNaChamadaDoGetImage](https://user-images.githubusercontent.com/79609859/229007860-d921d635-0146-436c-9950-562d30561811.png)
 
-Aqui, comecei testando alguns valores até conseguir centralizar a mensagem "topzera", rodando o código em uma imagem de teste. No entanto, quando rodei o código utilizando o url da lista, notei um problema. Nem todos os posters possuem escala similar, nos arquivos com resolução maior que a imagem teste, por exemplo, o texto ficava muito pequenininho. Isso ocorreu, pois nossa font permanecia com o mesmo size independente do tamanho da imagem.
+E o resultado foi o seguinte:
 
-Para encontrar uma forma de escalonar a font de acordo com o tamanho da imagem, recorri ao bom e velho caderninho.
-<img src=https://user-images.githubusercontent.com/79609859/228677524-54d7695d-71cd-42b4-9486-4a4b49c0cee8.jpeg width="321" height="426.6">
+![ImagemNASATest1](https://user-images.githubusercontent.com/79609859/229007918-2c172356-c071-48d1-8e01-6814934689a8.png)
 
-Utilizando ao menos três imagens, podemos encontrar uma "constante", que nos permite trabalhar o escalonamento para n opções de tamanho.
+Claro, como nossas legendas customizadas dependiam do valor do “imDbRating” dos filmes, a funcionalidade ainda não é compatível com a API da NASA.
 
-`
-graphics.setFont(graphics.getFont().deriveFont(Font.BOLD, largura * 0.16f )); // tamanho bom para a palavra topzera
-`
-![exemploTopzera](https://user-images.githubusercontent.com/79609859/228680158-8cced64c-963c-4339-91fa-6c35d493b04b.png)
+Para resolver tal questão, precisamos primeiro separar o tratamento das APIS do IMDB, NASA e etc.
 
-Tudo funcionava bem, no entanto, ao implementar frases maiores do que "topzera", nosso texto ficava totalmente vazado/cortado.
-Então, passei a estudar formas de reescalonar o texto baseado na área disponível para a frase na figurinha.
+Para um teste inicial, criei as novas classes, mas por enquanto só adicionei a funcionalidade de converter o valor de uma key da API em legenda para a figurinha.
 
-#### Nova solução:
-Aqui, definimos um retângulo como a área limite para o nosso texto, evitando que ele vaze para fora das margens de nossa imagem.
+![TesteExtratorIMDB](https://user-images.githubusercontent.com/79609859/229007991-96cf900d-374b-4882-ba7b-b1bedbd7ffeb.png)
+![TesteExtratorNASA](https://user-images.githubusercontent.com/79609859/229008014-462ee47c-ed9a-49d9-8168-dee3df9e93aa.png)
+![ChamadaDosMetodosDeGerarLegenda](https://user-images.githubusercontent.com/79609859/229008046-f0d08f74-511e-405b-9cf6-b62a4b0f71a4.png)
 
-O método de escalonamento da font baseado no rect, veio da seguinte [thread do StackOverflow](https://stackoverflow.com/questions/876234/need-a-way-to-scale-a-font-to-fit-a-rectangle). A partir dessa leitura e uma pequena pesquisa acerca do uso de labels, cheguei a seguinte solução:
+E o resultado foi:
 
-![image](https://user-images.githubusercontent.com/79609859/228680620-feb8d496-6f83-4bad-a0e2-d1864b82357e.png)
+![figurinhasAPOD](https://user-images.githubusercontent.com/79609859/229008099-faa24f7b-8e2b-427f-ba30-5bf9e11d0f99.png)
 
-![scaleFontMethod](https://user-images.githubusercontent.com/79609859/228680823-e3566aa1-0f92-499e-bba8-835bb19caad8.png)
+OK, com tudo funcionando corretamente, é hora de realmente repensar a forma como nosso código está escrito.
+
+### 3. Separação das responsabilidades
 
 
-![offsetsTexto](https://user-images.githubusercontent.com/79609859/228680349-8a17cf25-b626-4835-b361-5d1c7ebc6747.png)
+Classe conteudo: Uma classe criada para substituir as chamadas de "Map<String, String> valor". Um Conteudo armazena a string do titulo e a string com a url da imagem.
 
-Chegando ao seguinte resultado:
+As propriedades do Conteudo são campos privados, setados por seu construtor, elas utilizam a [final keyword](https://www.geeksforgeeks.org/final-keyword-in-java/), que permite delimitar que nossas variaveis privadas não poderão ser modificadas após ter o seu valor setado pelo construtor.
 
-<img src=https://user-images.githubusercontent.com/79609859/228684246-e342be4f-f072-4c83-98e9-f7e01bd925bd.png width="168.8" height="325">
-
-```
-Apesar do escalonamento funcionar, para o uso como figurinha, textos muito pequenos ficam com leitura ruim.
-Por isso, pretendo refatorar o código para buscar uma solução com quebra de linha baseado na área do rect.
-``` 
-### 3. Colocar outra fonte como a Comic Sans ou a Impact, a fonte usada em memes:
-
-De forma similar ao uso das imagens a partir de um InputStream, podemos importar um arquivo de Font para uso no projeto.
-
-![fontsDentroDoProjeto](https://user-images.githubusercontent.com/79609859/228685342-0ecd6a08-8ca6-4e28-813b-f8b5e8ae7203.png)
-
-![setupCustomFontJava](https://user-images.githubusercontent.com/79609859/228686481-91f477d3-ea54-4975-b64e-d05947b81a09.png)
-
-### 4. Colocar contorno (outline) no texto da imagem:
-
-Para este desafio, primeiro tentei descobrir uma possível solução para a criação de outlines dentro do próprio Java. Após alguns minutos um pouco afogado com os novos conteúdos, decidi parar e pensar em uma solução manual.
-
-Pensando na forma como alguns shaders de outline funcionam na Unity, criei a seguinte solução:
-
-![outlineAntesDoTexto](https://user-images.githubusercontent.com/79609859/228687254-d6093e5b-2868-4afc-ad85-c8a8922f4fe4.png)
-
-Aqui, renderizamos dois outros textos na cor desejada para a outline. Como sua chamada ocorre primeiro, eles serão desenhados por trás do texto em si. Ao modificar a posição das duas cópias, partes delas ficam "sobrando" através do texto original, criando o efeito de outline.
-
-![ExemploOutline](https://user-images.githubusercontent.com/79609859/228687598-d82de06c-5afa-443a-81b8-e71e85a89b59.png)
-
-Claro, essa provavelmente está longe de ser a melhor forma de atingir o resultado desejado, mas como parte do meu aprendizado na imersão, fiquei muito satisfeito com o resultado de uma solução própria.
-
-### 5. Colocar uma imagem de você que está fazendo esse curso sorrindo, fazendo joinha e fazer com que o texto da figurinha seja personalizado de acordo com as classificações do IMDB:
-Ok, neste desafio, apenas cumpri uma parte (ao menos por enquanto). Eu compreendo como seria o processo de desenhar a minha foto sobre a figurinha, que poderia ser feito utilizando o método [graphics.drawImage](https://docs.oracle.com/javase/tutorial/2d/images/drawimage.html), mas no momento não me senti confortável para tirar fotos e posta-las como figurinhas.
-
-No entanto, a possibilidade de adicionar um foto minha fazendo joinha, me trouxe a ideia de trabalhar aquele switch de intervalos de nota criado na aula 1 e, dependendo da avaliação do filme, adicionar uma foto minha mais empolgado ou entediado, trazendo qual seria minha reação ao assistir tal filme.
-Seguindo esta lógica, também atualizei o método Cria() para receber um input diferente dependendo da nota, no caso deste exercício, decidi que a frase legenda da foto (o topzera) seria substituido por uma String diferente para cada avaliação.
-
-![MetodoCria](https://user-images.githubusercontent.com/79609859/228697725-5044fe21-a46b-4225-86d3-933424f34744.png)
-![AtualizacaoDoMetodoDeAvaliarNota](https://user-images.githubusercontent.com/79609859/228697873-74cf18e4-cd9c-4d42-a464-a0ee4fa9ffa6.png)
-
-O método acima deverá ser refatorado em breve. Acabei adicionando essa segunda responsabilidade (gerar texto e emoji) para o teste, mas acredito que pensando na limpeza do código, será melhor no mínimo renomear o método e possibilitar a saida separada de diferentes resultados (gerar textoLegendaFigurinha ou emoji avaliação no terminal, ou...)
-
-```
-Obs:Sobre a adição de emojis na String da legenda - Na maioria da fonts, não há suporte para um caractere correspondente ao emoji,
-por isso o emoji será renderizado como [] ou similares.
-Para ter a presença do emoji, evitando essa dependencia direta de utilizar uma font que suporta emojis, podemos realizar o draw
-dos emojis como imagem, seguindo a mesma lógica pensada para a inserção da minha foto.
-```
+[...]
 
