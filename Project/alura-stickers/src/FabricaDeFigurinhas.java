@@ -78,7 +78,7 @@ public class FabricaDeFigurinhas {
     }
      catch (FileNotFoundException | IIOException e) // caso o diretório não exista
     {
-      e.printStackTrace();
+      e.printStackTrace(); // Utilizar um throw de runtime exeption aqui faz com que somente a 1° rode
       if (f.mkdirs())
       {
         ImageIO.write(novaImagem, "png", new File(f.getPath()));
