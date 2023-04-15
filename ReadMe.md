@@ -2,68 +2,90 @@
 
 Projeto que acompanha meu desenvolvimento durante a imersão Java da Alura.
 
-## Aula 3
+## Aula 4
 
-Na aula de hoje, trabalhamos a refatoração, pensando em aspectos como boas práticas e a extensibilidade do nosso código. Vimos questões como o uso de interfaces e polimorfismo para trazer uma abstração e flexibilidade maior para nossos métodos e classes.
+Nesta aula trabalhamos com a criação de nossa própria API. Seguindo a temática de linguagens de programação ranqueadas, o objetivo foi criar uma api similar à que trabalhamos na aula 1, com os top filmes do IMDB.
 
-### Nova API
+Para isso, damos um "salto no tempo", deixando de criar todas as funcionalidades "na unha" e passando a explorar o uso de bibliotecas e frameworks.
 
-Um ponto legal de trabalhar com uma API nova, no caso a API da NASA, foi que como o site da API do IMDB estava com instabilidades, nas outras aulas não tinha tido a experiência de acessar a url utilizando minha própria API, o json vinha de uma url já pronta previamente e isso me frustrava um pouco. Descobrir a sintaxe de uso da api_key e acessar o url por conta própria me trouxe a experiência mais real de trabalhar com esse tipo de ferramenta.
+### Spring Boot 🌱
 
-Na [página da API](https://api.nasa.gov/), nós encontramos uma tabela com os parâmetros e um exemplo de como a query fica no url.
+O Spring framework nos possibilita criar um webservice de forma muito mais fácil do que se fossemos criar tudo na mão. No seu site, podemos acessar o seguinte caminho:
 
-![API NASA how to use](https://user-images.githubusercontent.com/79609859/229006448-77ef01e4-7153-45de-a52a-36575252ec12.png)
+![SpringInitializrPage](https://user-images.githubusercontent.com/79609859/232253591-c6667b79-c1b1-48d4-b495-b01fbee4eeb1.PNG)
 
-### String.ReplaceAll()
+A página nos oferece uma forma fácil de, a partir de algumas opções e escolha de dependências, criar um projeto pronto para a criação do nosso webservice.
 
-Durante a aula, descobri que já existe uma solução própria dentro do java para a problemática com a qual nosso parser customizado lidava. Utilizando o método [String.ReplaceAll()]([https://www.javatpoint.com/java-string-replaceall](https://www.javatpoint.com/java-string-replaceall)), podemos substituir facilmente os “:” por “-” em nossos títulos. Assim, o código já fica bem mais limpo:
+![SpringInitializr](https://user-images.githubusercontent.com/79609859/232253711-1bb66b93-19a7-4d25-85eb-97f15caa9962.PNG)
 
-![String ReplaceAll](https://user-images.githubusercontent.com/79609859/229006781-18781ef6-00c2-4556-882d-9fa6ce657233.png)
+Na pasta /src/main/java, temos uma classe base já previamente criada pelo Spring.
 
-## Refatoração do nosso código
+![classeBaseSpringBoot](https://user-images.githubusercontent.com/79609859/232254788-d33d88b9-e360-47be-9f9a-67f46431fda4.PNG)
 
-### 1. MétodoPrinter da aula 1
-Primeiramente, seguindo a próprio andar da aula que buscava tratar o código da classe App, notei que o método que criei durante a aula 1 para printar a lista de filmes e sua classificação, já não funcionava bem naquele espaço. Estavamos desenvolvendo um código de gerador de figurinhas, logo o método de debug no terminal precisava se tornar sua própria classe (Single Responsibility Principle).
+![conexaoSpring](https://user-images.githubusercontent.com/79609859/232253762-ed95e877-1b1c-4c86-a8e4-ecdcadcf70a2.png)
 
-![metodoComoNovaClasse](https://user-images.githubusercontent.com/79609859/229007301-33d04ca3-3326-493a-af66-f793e030a275.png)
+Ao rodar o código, vemos que o Spring inicializa e que o Apache Tomcat iniciou na porta 8080 do localhost.
 
-A chamada do método a partir do nosso main, ficou assim:
+Utilizando as Annotations do Spring, podemos criar uma classe simples para trabalhar com essa página levantada pelo Tomcat:
 
-![ChamadaDoMoviePrinter](https://user-images.githubusercontent.com/79609859/229007329-59a1e956-0c82-432b-9f93-a02d7c5b4dcb.png)
+![path_resultado](https://user-images.githubusercontent.com/79609859/232253886-1e7a5bac-46c7-468e-875c-50c81445fa9d.png)
 
-### 2. Nova API, diferentes keys
-Com a adição da nova API da NASA, podemos testar se nosso código sem modificações seria capaz de funcionar para gerar figurinhas do novo url. 
+No endereço ".../linguagem-preferida", faça => return string "Olá, web!"
 
-Claro, como os valores das keys da API são diferentes da API do IMDB, alguns ajustes tiverem que ser feitos.
+![OlaWeb](https://user-images.githubusercontent.com/79609859/232254357-ea618e7c-2737-49d4-888f-1d930b8aa645.PNG)
 
-![MudancaNaChamadaDoGetImage](https://user-images.githubusercontent.com/79609859/229007860-d921d635-0146-436c-9950-562d30561811.png)
+Este método simplesmente adiciona a string que passamos como conteúdo da página na web. É uma coisa bem simples, mas demonstra a lógica pela qual vamos disponibilizar o JSON em uma url.
 
-E o resultado foi o seguinte:
+Com uma chamada um pouco diferente, passamos uma List< Linguagem > como retorno de nossa requisição.
 
-![ImagemNASATest1](https://user-images.githubusercontent.com/79609859/229007918-2c172356-c071-48d1-8e01-6814934689a8.png)
+![PaginaAPILinguagens](https://user-images.githubusercontent.com/79609859/232253900-4795548a-adaf-4ec1-a1ba-7f24c8ef188a.png)
 
-Claro, como nossas legendas customizadas dependiam do valor do “imDbRating” dos filmes, a funcionalidade ainda não é compatível com a API da NASA.
+Aqui, ao invés de um simples "hello world", disponibilizamos na web nosso JSON com a lista de linguagens.
 
-Para resolver tal questão, precisamos primeiro separar o tratamento das APIS do IMDB, NASA e etc.
+### MongoDB 🌿
 
-Para um teste inicial, criei as novas classes, mas por enquanto só adicionei a funcionalidade de converter o valor de uma key da API em legenda para a figurinha.
+Para trazer mais dinamismo e organização para nossa documentação de linguagens, seguimos a base utilizada pela List<Linguagem> para a criação de um baco de dados.
 
-![TesteExtratorIMDB](https://user-images.githubusercontent.com/79609859/229007991-96cf900d-374b-4882-ba7b-b1bedbd7ffeb.png)
-![TesteExtratorNASA](https://user-images.githubusercontent.com/79609859/229008014-462ee47c-ed9a-49d9-8168-dee3df9e93aa.png)
-![ChamadaDosMetodosDeGerarLegenda](https://user-images.githubusercontent.com/79609859/229008046-f0d08f74-511e-405b-9cf6-b62a4b0f71a4.png)
+O MongoDB é um banco de dados NoSQL, em que ao invés de guardarmos os valores em tabelas, utilizamos um formato BSON, que é uma representação binária dos dados. Esses dados podem ser trabalhados no formato JSON, o que funciona muito bem com nossa aplicação.
+Além disso, o MongoDB oferece o uso dos banco de dados através do CLOUD, como um serviço na AWS por exemplo. O uso em uma escala pequena como a do nosso projeto de estudo se enquadra no plano gratuito do MongoDB Atlas.
 
-E o resultado foi:
+![ClusterAtlas](https://user-images.githubusercontent.com/79609859/232252794-1712be3d-f7a1-488b-bb3f-b8b8879f195f.PNG)
 
-![figurinhasAPOD](https://user-images.githubusercontent.com/79609859/229008099-faa24f7b-8e2b-427f-ba30-5bf9e11d0f99.png)
+A infraestrutura da plataforma nos provê com clusters, no caso, optei por utilizar a região de São Paulo.
 
-OK, com tudo funcionando corretamente, é hora de realmente repensar a forma como nosso código está escrito.
+![DBCollection](https://user-images.githubusercontent.com/79609859/232252819-4ba7c6ee-5606-4359-b881-c27866da2365.PNG)
 
-### 3. Separação das responsabilidades
+Dentro da plataforma online, podemos acessar nossas coleções. Aqui, por exemplo, temos nosso banco de dados com as linguagens. Note como a estrutura de cada item é bem parecido com a estrutura que tinhamos no JSON das apis que consumimos nas últimas aulas.
+
+Para fazer sua integração com nosso projeto, precisamos atualizar as dependências no nosso arquivo pom:
+
+![MongoDBinPom](https://user-images.githubusercontent.com/79609859/232254027-b0e1720d-9d7f-4c70-99a3-d29514bff1a6.PNG)
+
+Para saber qual trecho de código era necessário adicionar, voltamos no site do Spring Initializr, onde criamos nosso projeto. Lá podemos adicionar um outro módulo de dependencia(como fizemos ao adicionar suporte para web)
+
+![SelecionarDependenciaNoSpringInitialz](https://user-images.githubusercontent.com/79609859/232254068-128b6470-1eb1-4efe-a5ab-f05e21642b2f.PNG)
+
+Só que desta vez, ao invés de criar um projeto novo, podemos apenas acessar "Ctrl+Space" para ter acesso ao código utilizado para o pom
+
+![TrechoPom](https://user-images.githubusercontent.com/79609859/232254197-214bf08f-c3a3-4baf-a00a-e7db8ec7b886.PNG)
 
 
-Classe conteudo: Uma classe criada para substituir as chamadas de "Map<String, String> valor". Um Conteudo armazena a string do titulo e a string com a url da imagem.
+### Postman 🐱‍🏍
 
-As propriedades do Conteudo são campos privados, setados por seu construtor, elas utilizam a [final keyword](https://www.geeksforgeeks.org/final-keyword-in-java/), que permite delimitar que nossas variaveis privadas não poderão ser modificadas após ter o seu valor setado pelo construtor.
+Outra ferramenta muito legal para facilitar nosso processo de interação e manutenção do nosso serviço, é o Postman. Ele é uma solução muito popular para trabalhar com APIs e podemos utilizar-lo para testar e explorar interações com a API que estamos criando.
 
-[...]
+Aqui, podemos fazer requests como um GET, POST e DELETE.
+
+![PostRequest_Postman](https://user-images.githubusercontent.com/79609859/232253086-9e29ef9b-fa4f-415f-97f5-7eba4904f65f.PNG)
+
+Passando os valores necessários para a criação de um novo item, podemos fazer uma chamada POST no endereço em que nossa API se encontra (no momento, localhost).
+Caso tudo esteja certo, recebemos um sinal como o "200 OK" e, nossos dados são adicionados ao banco de dados lá no MongoDB.
+
+Isso é possível, pois lá no nosso código, utilizando Annotations junto do Spring, indicamos o seguinte comportamento para essa chamada:
+
+![classeLinguagemController](https://user-images.githubusercontent.com/79609859/232253241-c5271b02-9628-4c0d-9b4e-039423220835.PNG)
+
+Graças à Annotation @Document, o Spring sabe que o nosso objeto Linguagem é aquilo que estamos armazenando na collection "principaisLinguagens" do MongoDB.
+
+![ObjetoAPI](https://user-images.githubusercontent.com/79609859/232253265-7838e5b6-a1f2-4602-be44-caa108330d08.PNG)
 
