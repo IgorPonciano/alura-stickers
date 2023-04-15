@@ -40,4 +40,6 @@ public class JsonParser {
         return dados;
 
     }
+
+    // Atualizar para o atributo ser um String, mas o valor poder ser qualquer tipo de dado ***
 }

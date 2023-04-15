@@ -26,8 +26,8 @@ public class App {
             InputStream imgInputStream = new URL(conteudo.urlImagem()).openStream();
             String parsedTitle = conteudo.titulo().replaceAll(":", "-");
 
-            // Gerar legenda custom
-            GenerateCustomStickerTextBasedOn(api, conteudo, "date"); // API NASA: date, API IMDB: imDbRating - valores teste
+            // Gerar legenda custom -> WIP
+            GenerateCustomStickerTextBasedOn(api, conteudo, "date"); // API NASA: date, API IMDB: imDbRating - valores teste, API Alura: ranking
            
 
             fabrica.Cria(imgInputStream, legendaFigurinha, parsedTitle);
